@@ -116,7 +116,8 @@ if flag==0:
                 reg_b=mylist[2]
                 reg_c=mylist[3]
                 if reg_a not in reg or reg_b not in reg or reg_c not in reg :
-                  error_print.append(f"Typos in instruction name or register name in line no. { l.index(mylist)+1+len(var_name)}\n")
+                          error_print.append(f"Typos in instruction name or register name in line no. { l.index(mylist)+1+len(var_val)}\n")
+                        
 
                 else:
                   st2=opcodess["add"]+"00"+reg_codes[reg_a]+reg_codes[reg_b]+reg_codes[reg_c]
@@ -135,7 +136,7 @@ if flag==0:
                 reg_b=mylist[2]
                 reg_c=mylist[3]
                 if reg_a not in reg or reg_b not in reg or reg_c not in reg :
-                  error_print.append(f"Typos in instruction name or register name in line no. { l.index(mylist)+1+len(var_name)}\n")
+                  error_print.append(f"Typos in instruction name or register name in line no. { l.index(mylist)+1+len(var_val)}\n")
                 else:
                   st2=opcodess["sub"]+"00"+reg_codes[reg_a]+reg_codes[reg_b]+reg_codes[reg_c]
                   st=st2+"\n"
@@ -155,7 +156,7 @@ if flag==0:
                 reg_b=mylist[2]
                 reg_c=mylist[3]
                 if reg_a not in reg or reg_b not in reg or reg_c not in reg :
-                  error_print.append(f"Typos in instruction name or register name in line no. { l.index(mylist)+1+len(var_name)}\n")
+                  error_print.append(f"Typos in instruction name or register name in line no. { l.index(mylist)+1+len(var_val)}\n")
                 else:
                   st2=opcodess["mul"]+"00"+reg_codes[reg_a]+reg_codes[reg_b]+reg_codes[reg_c]
                   st=st2+"\n"
@@ -171,7 +172,7 @@ if flag==0:
             reg_b=mylist[2]
             reg_c=mylist[3]
             if reg_a not in reg or reg_b not in reg or reg_c not in reg :
-                  error_print.append(f"Typos in instruction name or register name in line no. { l.index(mylist)+1+len(var_name)}\n")
+                  error_print.append(f"Typos in instruction name or register name in line no. { l.index(mylist)+1+len(var_val)}\n")
             else:
               #reg_val[reg_a]=int(reg_val[reg_b])^int(reg_val[reg_c])
               st2=opcodess["xor"]+"00"+reg_codes[reg_a]+reg_codes[reg_b]+reg_codes[reg_c]
@@ -292,6 +293,7 @@ if flag==0:
             if reg_a not in reg:
               error_print.append(f"Typos in instruction name or register name in line no. { l.index(mylist)+1+len(var_val)}\n")
             else:
+              dol=mylist[2][0]
               if dol=="$":
                 if 0<=int(mylist[2][1:])<=127:
                   im_val= dectobinary( int(mylist[2][1:]))# change the function used here such that it returns a 7- bit binary value of a decimal number
@@ -322,7 +324,72 @@ if flag==0:
                   error_print.append(f"Illegal Immediate values (more than 7 bits) in  line no. { l.index(mylist)+1+len(var_val)}\n")
               else:
                 error_print.append(f"General Syntax Error in  line no. { l.index(mylist)+1+len(var_val)}\n")
+        elif mylist[0]=="not":# does it mean flipping all the bits OR ONE's complement
+            reg_a=mylist[1]
+            reg_b=mylist[2]
+            if reg_a not in reg or reg_b not in reg:
+              error_print.append(f"Typos in instruction name or register name in line no. { l.index(mylist)+1+len(var_val)}\n")
+            else:
+              reg_val[reg_a]=binarytodec(invert(dectobinary(reg_val[reg_b])))
+              st2= opcodess["not"]+"00000"+reg_codes[reg_a]+reg_codes[reg_b]
+              st=st2+"\n"
+              list_print.append(st)
+              reg_val[reg_a]=0
 
+        elif mylist[0]=="cmp":
+            reg_a=mylist[1]
+            reg_b=mylist[2]
+            if reg_a not in reg or reg_b not in reg:
+              error_print.append(f"Typos in instruction name or register name in line no. { l.index(mylist)+1+len(var_val)}\n")
+            else:
+              st2= opcodess["cmp"]+"00000"+reg_codes[reg_a]+reg_codes[reg_b]
+              st=st2+"\n"
+              list_print.append(st)
+          
+        elif mylist[0]=="jmp":
+            
+            lab_name=mylist[1]
+            if lab_name in mem_address:
+              st2= opcodess["jmp"]+"0000"+mem_address[lab_name]
+              st=st2+"\n"
+              list_print.append(st)
+            else:
+              error_print.append(f"Use of undefined labels in line no. { l.index(mylist)+1+len(var_val)}\n")
+
+        elif mylist[0]=="jlt":
+            lab_name=mylist[1]
+            if lab_name in mem_address:
+              st2= opcodess["jlt"]+"0000"+mem_address[lab_name]
+              st=st2+"\n"
+              list_print.append(st)
+            else:
+              error_print.append(f"Use of undefined labels in line no. { l.index(mylist)+1+len(var_val)}\n")
+            
+
+        elif mylist[0]=="jgt":
+            lab_name=mylist[1]
+            if lab_name in mem_address:
+              st2= opcodess["jgt"]+"0000"+mem_address[lab_name]
+              st=st2+"\n"
+              list_print.append(st)
+            else:
+              error_print.append(f"Use of undefined labels in line no. { l.index(mylist)+1+len(var_val)}\n")
+
+        elif mylist[0]=="je":
+            lab_name=mylist[1]
+            if lab_name in mem_address:
+              st2= opcodess["je"]+"0000"+mem_address[lab_name]
+              st=st2+"\n"
+              list_print.append(st)
+            else:
+              error_print.append(f"Use of undefined labels in line no. { l.index(mylist)+1+len(var_val)}\n")
+
+        elif mylist[0]=="hlt":
+            st2=opcodess["hlt"]+"00000000000"
+            st=st2+"\n"
+            list_print.append(st)
+            hlt_check=1
+            break
         elif mylist[0]=="hlt":
             st2=opcodess["hlt"]+"00000000000"
             st=st2+"\n"
@@ -339,3 +406,16 @@ if flag==0:
 
   except:
     error_print.append(f"General syntax error on line { l.index(mylist)+1+len(var_val)}\n")
+f.close()   
+if len(error_print)==0:
+  if len(list_print)>127:
+    final_list=list_print[:128]
+  else:
+    final_list=list_print 
+  out= open("stdout.txt","w")
+  out.writelines(final_list)
+  out.close()
+else:
+  out= open("stdout.txt","w")
+  out.writelines(error_print[0])
+  out.close()

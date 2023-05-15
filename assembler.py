@@ -98,3 +98,156 @@ for i in range(len(l)):
   # print(mem_address)
   # print(l)
 
+if flag==0:
+  try:
+    list_print=[]
+    hlt_check=0
+    for i in l:
+
+        # print(i)
+        st=""
+        mylist=i
+        # print(len(myl))
+        if len(mylist)==0:
+          continue
+        if mylist[0]=='add':
+            if 0<=int(reg_val[mylist[2]])+int(reg_val[mylist[3]])<=127 :
+                reg_a=mylist[1]
+                reg_b=mylist[2]
+                reg_c=mylist[3]
+                if reg_a not in reg or reg_b not in reg or reg_c not in reg :
+                  error_print.append(f"Typos in instruction name or register name in line no. { l.index(mylist)+1+len(var_name)}\n")
+
+                else:
+                  st2=opcodess["add"]+"00"+reg_codes[reg_a]+reg_codes[reg_b]+reg_codes[reg_c]
+                  st=st2+"\n"
+                  list_print.append(st)
+                  #reg_val[reg_a]=int(reg_val[reg_b])+int(reg_val[reg_c])
+                
+            # else:
+            #     #reg_val[mylist[1]]=0
+            #     st="overflow"
+            
+
+        elif mylist[0]=="sub":
+            if 0<=int(reg_val[mylist[2]])-int(reg_val[mylist[3]])<=127 :
+                reg_a=mylist[1]
+                reg_b=mylist[2]
+                reg_c=mylist[3]
+                if reg_a not in reg or reg_b not in reg or reg_c not in reg :
+                  error_print.append(f"Typos in instruction name or register name in line no. { l.index(mylist)+1+len(var_name)}\n")
+                else:
+                  st2=opcodess["sub"]+"00"+reg_codes[reg_a]+reg_codes[reg_b]+reg_codes[reg_c]
+                  st=st2+"\n"
+                  list_print.append(st)
+                  #reg_val[reg_a]=int(reg_val[reg_b])-int(reg_val[reg_c])
+
+                
+            # else:
+            #     #reg_val[mylist[1]]=0
+            #     st="overflow"
+            
+
+
+        elif mylist[0]=="mul":
+            if 0<=int(reg_val[mylist[2]])*int(reg_val[mylist[3]])<=127 :
+                reg_a=mylist[1]
+                reg_b=mylist[2]
+                reg_c=mylist[3]
+                if reg_a not in reg or reg_b not in reg or reg_c not in reg :
+                  error_print.append(f"Typos in instruction name or register name in line no. { l.index(mylist)+1+len(var_name)}\n")
+                else:
+                  st2=opcodess["mul"]+"00"+reg_codes[reg_a]+reg_codes[reg_b]+reg_codes[reg_c]
+                  st=st2+"\n"
+                  list_print.append(st)
+                  #reg_val[reg_a]=int(reg_val[reg_b])-int(reg_val[reg_c])
+            # else:
+            #     #reg_val[mylist[1]]=0
+            #     st="overflow"
+          
+
+        elif mylist[0]=="xor":
+            reg_a=mylist[1]
+            reg_b=mylist[2]
+            reg_c=mylist[3]
+            if reg_a not in reg or reg_b not in reg or reg_c not in reg :
+                  error_print.append(f"Typos in instruction name or register name in line no. { l.index(mylist)+1+len(var_name)}\n")
+            else:
+              #reg_val[reg_a]=int(reg_val[reg_b])^int(reg_val[reg_c])
+              st2=opcodess["xor"]+"00"+reg_codes[reg_a]+reg_codes[reg_b]+reg_codes[reg_c]
+              st=st2+"\n"
+              list_print.append(st)
+
+        elif mylist[0]=="or":
+            reg_a=mylist[1]
+            reg_b=mylist[2]
+            reg_c=mylist[3]
+            if reg_a not in reg or reg_b not in reg or reg_c not in reg :
+                  error_print.append(f"Typos in instruction name or register name in line no. { l.index(mylist)+1+len(var_val)}\n")
+            else:
+              #reg_val[reg_a]=int(reg_val[reg_b])|int(reg_val[reg_c])
+              st2=opcodess["or"]+"00"+reg_codes[reg_a]+reg_codes[reg_b]+reg_codes[reg_c]
+              st=st2+"\n"
+              list_print.append(st)
+
+
+        elif mylist[0]=="and":
+            
+            reg_a=mylist[1]
+            reg_b=mylist[2]
+            reg_c=mylist[3]
+            if reg_a not in reg or reg_b not in reg or reg_c not in reg :
+                  error_print.append(f"Typos in instruction name or register name in line no. { l.index(mylist)+1+len(var_val)}\n")
+            else:
+              #reg_val[reg_a]=int(reg_val[reg_b])&int(reg_val[reg_c])
+              st2=opcodess["and"]+"00"+reg_codes[reg_a]+reg_codes[reg_b]+reg_codes[reg_c]
+              st=st2+"\n"
+              list_print.append(st)
+    #mera code
+    #move immediate 
+        elif mylist[0]=="mov":
+            string_move=str(mylist[2])
+            if string_move[0]=="$":
+                reg_a=mylist[1]
+                if reg_a not in reg:
+                  error_print.append(f"Typos in instruction name or register name in line no. { l.index(mylist)+1+len(var_val)}\n")
+                else:
+                  val_1=int(mylist[2][1:])
+                  if 0<=val_1<=127:
+                    reg_val[mylist[1]]=val_1
+                    st2=opcodess["mov"]+"0"+reg_codes[reg_a]+dectobinary(val_1)
+                    st=st2+"\n"
+                    list_print.append(st)
+                    reg_val[mylist[1]]=0
+                  else:
+                    error_print.append(f"Illegal Immediate values (more than 7 bits) in line no. { l.index(mylist)+1+len(var_val)}\n")
+    #move register
+            else:
+                reg_a=mylist[1]
+                reg_b=mylist[2]
+                if reg_a not in reg or reg_b not in reg_codes:
+                  error_print.append(f"Typos in instruction name or register name in line no. { l.index(mylist)+1+len(var_val)}\n")
+                else:
+                  reg_val[mylist[1]]=reg_val[mylist[2]]
+                  x="00011"
+                  st2=x+"00000"+reg_codes[reg_a]+reg_codes[reg_b]
+                  st=st2+"\n"
+                  list_print.append(st)
+                  reg_val[mylist[1]]=0
+                  reg_val[mylist[2]]=0
+        elif mylist[0]=="hlt":
+            st2=opcodess["hlt"]+"00000000000"
+            st=st2+"\n"
+            list_print.append(st)
+            hlt_check=1
+            break
+        #piyush : error handling
+        else:
+          error_print.append(f"Typos in instruction name or register name in line no. { l.index(mylist)+1+len(var_val)}\n")
+          
+
+    if hlt_check==0:
+        error_print.append(f"Missing hlt instruction\n")
+
+  except:
+    error_print.append(f"General syntax error on line { l.index(mylist)+1+len(var_val)}\n")

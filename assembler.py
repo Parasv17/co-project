@@ -235,6 +235,94 @@ if flag==0:
                   list_print.append(st)
                   reg_val[mylist[1]]=0
                   reg_val[mylist[2]]=0
+        elif mylist[0]=="div":#Doubt in this function abot R0 and R1 being literally R1 and R0 or the given registers.
+            reg_a=mylist[1]
+            reg_b=mylist[2]
+            if reg_a not in reg or reg_b not in reg:
+              error_print.append(f"Typos in instruction name or register name in line no. { l.index(mylist)+1+len(var_val)}\n")
+            else:
+              x=reg_val[reg_a]
+              y=reg_val[reg_b]
+              st2= opcodess["div"]+"00000"+reg_codes[reg_a]+reg_codes[reg_b]
+              st=st2+"\n"
+              list_print.append(st)
+              if y==0:
+                  # st2="0000000000001000"
+                  # st=st2+"\n"
+                  # list_print.append(st)
+                  reg_val["R1"]=0
+                  reg_val["R0"]=0
+              else:
+                  quo=x//y
+                  remainder=x%y
+                  reg_val["R0"]=quo
+                  reg_val["R1"]=remainder
+    # paras
+        elif mylist[0]=="ld":
+            reg_a= mylist[1]
+            var_name= mylist[2]
+            if reg_a not in reg:
+              error_print.append(f"Typos in instruction name or register name in line no. { l.index(mylist)+1+len(var_val)}\n")
+            else:
+              #reg_val[reg_a]=var_val[var_name]# need to check this statment
+                if var_name in var_val:
+                    st2=opcodess["ld"]+"0"+reg_codes[reg_a]+var_address[var_name]
+                    st=st2+"\n"
+                    list_print.append(st)
+                else:
+                  error_print.append(f"Variables not declared at the beginning or Use of undefined variables in line no. { l.index(mylist)+len(var_val)}\n")
+            
+
+        elif mylist[0]=="st":
+            reg_a= mylist[1]
+            var_name= mylist[2]
+            if reg_a not in reg :
+              error_print.append(f"Typos in instruction name or register name in line no. { l.index(mylist)+1+len(var_val)}\n")
+            else:
+              if var_name in var_val:
+                var_val[var_name]=reg_val[reg_a]# need to check this statment
+                st2=opcodess["st"]+"0"+reg_codes[reg_a]+var_address[var_name]
+                st=st2+"\n"
+                list_print.append(st)
+                reg_val[reg_a]=0
+              else:
+                error_print.append(f"Variables not declared at the beginning or Use of undefined variables in line no. { l.index(mylist)+1+len(var_val)}\n")
+        elif mylist[0]=="rs":
+            reg_a= mylist[1]
+            if reg_a not in reg:
+              error_print.append(f"Typos in instruction name or register name in line no. { l.index(mylist)+1+len(var_val)}\n")
+            else:
+              if dol=="$":
+                if 0<=int(mylist[2][1:])<=127:
+                  im_val= dectobinary( int(mylist[2][1:]))# change the function used here such that it returns a 7- bit binary value of a decimal number
+                  reg_val[reg_a]= reg_val[reg_a]>>int(mylist[2][1:])
+                  st2=opcodess["rs"]+"0"+reg_codes[reg_a]+im_val
+                  st=st2+"\n"
+                  list_print.append(st)
+                else:
+                  error_print.append(f"Illegal Immediate values (more than 7 bits) in  line no. { l.index(mylist)+1+len(var_val)}\n")
+              else:
+                error_print.append(f"General Syntax Error in  line no. { l.index(mylist)+1+len(var_val)}\n")
+              
+
+        elif mylist[0]=="ls":
+            reg_a= mylist[1]
+            if reg_a not in reg :
+              error_print.append(f"Typos in instruction name or register name in line no. { l.index(mylist)+1+len(var_val)}\n")
+            else:
+              dol=mylist[2][0]
+              if dol=="$": 
+                if 0<=int(mylist[2][1:])<=127:
+                  im_val= dectobinary( int(mylist[2][1:]))# change the function used here such that it returns a 7- bit binary value of a decimal number
+                  reg_val[reg_a]= reg_val[reg_a]<<int(mylist[2][1:])
+                  st2=opcodess["ls"]+"0"+reg_codes[reg_a]+im_val
+                  st=st2+"\n"
+                  list_print.append(st)
+                else:
+                  error_print.append(f"Illegal Immediate values (more than 7 bits) in  line no. { l.index(mylist)+1+len(var_val)}\n")
+              else:
+                error_print.append(f"General Syntax Error in  line no. { l.index(mylist)+1+len(var_val)}\n")
+
         elif mylist[0]=="hlt":
             st2=opcodess["hlt"]+"00000000000"
             st=st2+"\n"

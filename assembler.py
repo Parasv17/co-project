@@ -42,7 +42,7 @@ mem_address={} # Label addresses
 
 error_print=[]
 flag=0
-
+var_ct=True
 f= open("stdin.txt","r")
 l=f.readlines()
 
@@ -54,7 +54,20 @@ for i in range(len(l)):
   if l[i][-1]=="hlt" and i!=len(l)-1:
     error_print.append("hlt is not the last instruction\n")
     flag=1
+for i in range(len(l)):
+    if l[i][0]=="var" and var_ct==True:
+        continue
+    elif l[i][0]!="var" and var_ct==True:
+        var_ct=False
+    elif l[i][0]!="var" and var_ct==False:
+       continue
+    elif l[i][0]=="var" and var_ct==False:
+        error_print.append("Variable not defined at start.\n")
+        flag=1
+        break
+ 
 
+    
     
 #traversing through the list to change the address of variables
 j=0
@@ -390,15 +403,12 @@ if flag==0:
             list_print.append(st)
             hlt_check=1
             break
-        elif mylist[0]=="hlt":
-            st2=opcodess["hlt"]+"00000000000"
-            st=st2+"\n"
-            list_print.append(st)
-            hlt_check=1
-            break
         #piyush : error handling
+        elif mylist[0]=="var":
+          break
         else:
           error_print.append(f"Typos in instruction name or register name in line no. { l.index(mylist)+1+len(var_val)}\n")
+          break
           
 
     if hlt_check==0:
@@ -419,3 +429,5 @@ else:
   out= open("stdout.txt","w")
   out.writelines(error_print[0])
   out.close()
+
+# print(error_print)

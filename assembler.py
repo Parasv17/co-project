@@ -1,3 +1,5 @@
+import sys
+
 def binarytodec(b):
 
     i =1
@@ -43,8 +45,11 @@ mem_address={} # Label addresses
 error_print=[]
 flag=0
 var_ct=True
-f= open("stdin.txt","r")
-l=f.readlines()
+# f= open("stdin.txt","r")
+# l=f.readlines()
+l=[]
+for kx in sys.stdin:
+   l.append(kx)
 
 # Reading 1st time to split the str in list
 for i in range(len(l)):
@@ -95,7 +100,7 @@ for i in range(len(l)):
         mem_address[l[i][0][:-1]]=dectobinary(i)
         l[i].pop(0) #defines label as anything that end with :
       else:
-        error_print.append(f"General error in line no.{i+1 +len(var_val)}")
+        error_print.append(f"General syntax error in line no.{i+1 +len(var_val)}")
         flag=1
         break
     # elif (l[i][0][-1]==":" and l[i][0][-2]!=" "):
@@ -284,7 +289,7 @@ if flag==0:
                     st=st2+"\n"
                     list_print.append(st)
                 else:
-                  error_print.append(f"Variables not declared at the beginning or Use of undefined variables in line no. { l.index(mylist)+len(var_val)}\n")
+                  error_print.append(f"Variables not declared at the beginning or Use of undefined variables in line no. { l.index(mylist)+len(var_val)+1}\n")
             
 
         elif mylist[0]=="st":
@@ -416,18 +421,21 @@ if flag==0:
 
   except:
     error_print.append(f"General syntax error on line { l.index(mylist)+1+len(var_val)}\n")
-f.close()   
+# f.close()   
 if len(error_print)==0:
   if len(list_print)>127:
     final_list=list_print[:128]
   else:
     final_list=list_print 
-  out= open("stdout.txt","w")
-  out.writelines(final_list)
-  out.close()
+#   out= open("stdout.txt","w")
+#   out.writelines(final_list)
+#   out.close()
+    for kx in final_list:
+        sys.stdout.write(kx)
 else:
-  out= open("stdout.txt","w")
-  out.writelines(error_print[0])
-  out.close()
+#   out= open("stdout.txt","w")
+#   out.writelines(error_print[0])
+#   out.close()
+    sys.stdout.write(error_print[0])
 
 # print(error_print)

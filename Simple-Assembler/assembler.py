@@ -439,3 +439,4 @@ else:
     sys.stdout.write(error_print[0])
 
 # print(error_print)
+l=0

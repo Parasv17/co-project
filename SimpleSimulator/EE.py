@@ -53,4 +53,48 @@ def execute(inst, PC, halt):
             else:
                 #overflow handle crow
                 reg_val["FLAGS"]=8
+        elif (A[opcode]=="xor"):
+            result= reg_val[reg_2]^reg_val[reg_3]
+            if (0<= result<=127):
+                reg_val[reg_1]=result
+                reg_val["FLAGS"]=0
+            else:
+                #overflow handle crow
+                reg_val["FLAGS"]=8
 
+        elif (A[opcode]=="or"):
+            result= (reg_val[reg_2])|(reg_val[reg_3])
+            if (0<= result<=127):
+                reg_val[reg_1]=result
+                reg_val["FLAGS"]=0
+            else:
+                #overflow handle crow
+                reg_val["FLAGS"]=8
+
+        elif (A[opcode]=="and"):
+            result= reg_val[reg_2]&reg_val[reg_3]
+            if (0<= result<=127):
+                reg_val[reg_1]=result
+                reg_val["FLAGS"]=0
+            else:
+                #overflow handle crow
+                reg_val["FLAGS"]=8
+        PC+=1
+
+    # TYPE B 
+    elif ( opcode in B):
+        reg_1=reg_codes[inst[6:9]]
+        imm_val= binarytodec(inst[9:16])
+
+        if (B[opcode]=="mov"):
+            reg_val[reg_1]= imm_val
+            reg_val["FLAGS"]=0
+
+        elif (B[opcode]=="rs"):
+            reg_val[reg_1]= reg_val[reg_1]>>imm_val
+            reg_val["FLAGS"]=0
+
+        elif (B[opcode]=="ls"):
+            reg_val[reg_1]= reg_val[reg_1]<<imm_val
+            reg_val["FLAGS"]=0
+        PC+=1

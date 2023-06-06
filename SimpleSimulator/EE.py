@@ -98,3 +98,53 @@ def execute(inst, PC, halt):
             reg_val[reg_1]= reg_val[reg_1]<<imm_val
             reg_val["FLAGS"]=0
         PC+=1
+   #TYPE C
+    elif ( opcode in C):
+        reg_1=reg_codes[inst[10:13]]
+        reg_2=reg_codes[inst[13:16]]
+
+        if (C[opcode]=="mov"):
+
+            reg_val[reg_1]=reg_val[reg_2]
+            reg_val["FLAGS"]=0
+
+        elif (C[opcode]=="div"):
+            if ( reg_2==0):
+                #overflow handle crow
+                reg_val["FLAGS"]=8
+                reg_val["R1"]=0
+                reg_val["R0"]=0
+            else:
+                reg_val["FLAGS"]=0
+                quo= reg_1//reg_2
+                rem= reg_1%reg_2
+                reg_val["R0"]=quo
+                reg_val["R1"]=rem
+
+        elif (C[opcode]=="not"):
+            reg_val["FLAGS"]=0
+            reg_val[reg_1]= ~reg_val[reg_2]
+
+        elif (C[opcode]=="cmp"):
+            if  reg_val[reg_1] < reg_val[reg_2]:
+                reg_val["FLAGS"]=4
+
+            elif  reg_val[reg_1] > reg_val[reg_2]:
+                reg_val["FLAGS"]=2
+
+            elif  reg_val[reg_1] == reg_val[reg_2]:
+                reg_val["FLAGS"]=1
+        PC+=1
+    #TYPE D
+    elif ( opcode in D):
+        reg_1=reg_codes[inst[6:9]]
+        mem_addr= binarytodec(inst[9:16])
+
+        if (D[opcode]=="ld"):
+            reg_val[reg_1]= binarytodec( MEM.memory[mem_addr])
+            reg_val["FLAGS"]=0
+
+        elif (D[opcode]=="st"):
+             MEM.memory[(mem_addr)]=dectobinary_16( reg_val[reg_1])
+             reg_val["FLAGS"]=0
+        PC+=1

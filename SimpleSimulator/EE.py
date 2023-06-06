@@ -148,3 +148,45 @@ def execute(inst, PC, halt):
              MEM.memory[(mem_addr)]=dectobinary_16( reg_val[reg_1])
              reg_val["FLAGS"]=0
         PC+=1
+    #TYPE E
+    elif ( opcode in E):
+        mem_addr= binarytodec(inst[9:16])
+
+        if (E[opcode]=="jmp"):
+            PC= binarytodec (mem_addr)
+            reg_val["FLAGS"]=0
+
+        elif (E[opcode]=="jlt"):
+            if reg_val["FLAGS"]==4:
+                PC= binarytodec (mem_addr)
+
+        elif (E[opcode]=="jgt"):
+            if reg_val["FLAGS"]==2:
+                PC= binarytodec (mem_addr)
+
+        elif (E[opcode]=="je"):
+            if reg_val["FLAGS"]==1:
+                PC= binarytodec (mem_addr)
+
+    elif ( opcode in F):
+        halt= True
+    return halt ,PC
+    
+    
+
+
+
+A={"00000":"add","00001":"sub","00110":"mul","01010":"xor","01011":"or","01100":"and"}
+
+B={"00010":"mov","01000":"rs","01001":"ls"}
+
+C={"00011":"mov","00111":"div","01101":"not","01110":"cmp"}
+
+D={"00100":"ld","00101":"st"}
+
+E={"01111":"jmp","11100":"jlt","11101":"jgt","11111":"je"}
+
+F={"11010":"hlt"}
+
+reg_codes={"000":"R0","001":"R1","010":"R2","011":"R3","100":"R4","101":"R5","110":"R6","FLAGS":"111"}
+reg_val={"R0":0,"R1":0,"R2":0,"R3":0,"R4":0,"R5":0,"R6":0,"FLAGS":0}
